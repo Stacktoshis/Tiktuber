@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTuber - YouTube to TikTok Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(90deg, #ff0050, #ff00a0, #ff00f0);
+        }
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.active {
+            background-color: #ff0050;
+            color: white;
+        }
+        .progress-step.completed {
+            background-color: #00d47e;
+            color: white;
+        }
+        .progress-line {
+            height: 3px;
+            background-color: #e2e8f0;
+            position: relative;
+            z-index: 0;
+        }
+        .progress-line-inner {
+            height: 100%;
+            background-color: #00d47e;
+            transition: width 0.5s ease;
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .fadeIn {
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .loader {
+            border-top-color: #ff0050;
+            animation: spinner 1s linear infinite;
+        }
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+        .phone-frame {
+            position: relative;
+            width: 280px;
+            height: 560px;
+            background: #000;
+            border-radius: 36px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 8px solid #333;
+        }
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-container {
+            transition: transform 0.25s ease;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-video text-2xl"></i>
+                <span class="text-2xl font-bold">TikTuber</span>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-gray-200 transition">Home</a>
+                <a href="#how-it-works" class="hover:text-gray-200 transition">How It Works</a>
+                <a href="#faq" class="hover:text-gray-200 transition">FAQ</a>
+            </div>
+            <button class="md:hidden focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-800">Transform YouTube to TikTok Magic</h1>
+                    <p class="text-xl text-gray-600 mb-6">Convert Creative Commons YouTube videos into TikTok-ready content with our AI-powered editor.</p>
+                    <div class="flex space-x-4">
+                        <a href="#converter" class="px-6 py-3 bg-pink-600 text-white rounded-full hover:bg-pink-700 transition shadow-lg font-semibold">
+                            Start Converting
+                        </a>
+                        <a href="#how-it-works" class="px-6 py-3 border border-pink-600 text-pink-600 rounded-full hover:bg-pink-50 transition font-semibold">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-pink-400 to-purple-500 rounded-lg transform rotate-6 scale-105 opacity-30"></div>
+                        <div class="relative bg-white p-6 rounded-lg shadow-xl">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fab fa-youtube text-2xl text-pink-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">YouTube</h3>
+                                    <p class="text-sm text-gray-500">Creative Commons Videos</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-center my-2">
+                                <i class="fas fa-arrow-down text-pink-500 text-2xl"></i>
+                            </div>
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-magic text-2xl text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">AI Processing</h3>
+                                    <p class="text-sm text-gray-500">Edit, Format, Enhance</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-center my-2">
+                                <i class="fas fa-arrow-down text-purple-500 text-2xl"></i>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fab fa-tiktok text-2xl text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">TikTok Ready</h3>
+                                    <p class="text-sm text-gray-500">Vertical Format, Engaging Edits</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Converter Section -->
+    <section id="converter" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">YouTube to TikTok Converter</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Enter a YouTube clip link to transform it into a TikTok-style video. We'll verify the license, extract a clip, and enhance it for TikTok.</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 md:p-8">
+                    <div class="mb-8">
+                        <div class="flex flex-wrap mb-4">
+                            <div class="progress-step flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 font-semibold text-gray-500">1</div>
+                            <div class="progress-line flex-1 mx-2">
+                                <div class="progress-line-inner w-0"></div>
+                            </div>
+                            <div class="progress-step flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 font-semibold text-gray-500">2</div>
+                            <div class="progress-line flex-1 mx-2">
+                                <div class="progress-line-inner w-0"></div>
+                            </div>
+                            <div class="progress-step flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 font-semibold text-gray-500">3</div>
+                            <div class="progress-line flex-1 mx-2">
+                                <div class="progress-line-inner w-0"></div>
+                            </div>
+                            <div class="progress-step flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 font-semibold text-gray-500">4</div>
+                        </div>
+                        <div class="flex flex-wrap text-sm text-gray-600">
+                            <div class="w-1/4 text-center">License Check</div>
+                            <div class="w-1/4 text-center">Download</div>
+                            <div class="w-1/4 text-center">Edit Video</div>
+                            <div class="w-1/4 text-center">Ready!</div>
+                        </div>
+                    </div>
+                    
+                    <form id="converter-form" class="mb-6">
+                        <div class="mb-4">
+                            <label for="youtube-url" class="block text-gray-700 font-medium mb-2">YouTube Clip URL</label>
+                            <div class="flex">
+                                <input type="text" id="youtube-url" placeholder="https://youtube.com/clip/..." 
+                                       class="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500" 
+                                       required>
+                                <button type="submit" class="bg-pink-600 text-white px-6 py-3 rounded-r-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition">
+                                    Convert
+                                </button>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500">Example: https://youtube.com/clip/Ugkxm2Y1Val1a4SLks1M6Owq9qENFnXLjxv1</p>
+                        </div>
+                    </form>
+                    
+                    <div id="status-box" class="mb-6 p-4 bg-gray-50 rounded-lg hidden">
+                        <div class="flex items-start">
+                            <div class="mr-3 mt-0.5">
+                                <div id="status-icon" class="w-6 h-6 text-center">
+                                    <i class="fas fa-circle-notch fa-spin text-pink-600"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 id="status-title" class="font-medium text-gray-800">Processing your video...</h4>
+                                <p id="status-message" class="text-sm text-gray-600 mt-1">Please wait while we check the license.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="error-box" class="mb-6 p-4 bg-red-50 rounded-lg hidden">
+                        <div class="flex items-start">
+                            <div class="mr-3 mt-0.5 text-red-600">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-red-800">Error Processing Video</h4>
+                                <p id="error-message" class="text-sm text-red-600 mt-1">Sorry, we couldn't process this video.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="result-container" class="hidden">
+                        <div class="flex flex-col md:flex-row">
+                            <div class="md:w-1/2 p-4">
+                                <h3 class="text-xl font-bold mb-4 text-gray-800">Original Video</h3>
+                                <div class="bg-black rounded-lg overflow-hidden">
+                                    <video id="original-video" class="w-full h-auto" controls playsinline webkit-playsinline>
+                                        <source src="" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                            <div class="md:w-1/2 p-4">
+                                <h3 class="text-xl font-bold mb-4 text-gray-800">TikTok Version</h3>
+                                <div class="flex justify-center">
+                                    <div class="phone-frame">
+                                        <div class="phone-screen">
+                                            <video id="tiktok-video" class="w-full h-full object-cover" controls playsinline webkit-playsinline>
+                                                <source src="" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 text-center">
+                            <a id="download-btn" href="#" class="px-8 py-3 bg-pink-600 text-white rounded-full hover:bg-pink-700 transition shadow-lg font-semibold inline-flex items-center hidden">
+                                <i class="fas fa-download mr-2"></i> Download TikTok Video
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">How It Works</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Our AI-powered system transforms YouTube videos into TikTok-ready content in just a few steps</p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="bg-gray-50 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check-circle text-2xl text-pink-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">License Verification</h3>
+                    <p class="text-gray-600">We check that the video has a Creative Commons license to ensure legal usage.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-download text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Video Download</h3>
+                    <p class="text-gray-600">We download the video and extract a 1-2 minute clip that captures the essence.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cut text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">TikTok Editing</h3>
+                    <p class="text-gray-600">We reformat to vertical, add transitions, subtitles, and royalty-free music.</p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paper-plane text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Ready to Share</h3>
+                    <p class="text-gray-600">Download your TikTok-optimized video ready to upload and share.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Frequently Asked Questions</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Get answers to common questions about our YouTube to TikTok converter</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex justify-between items-center hover:bg-gray-50 focus:outline-none">
+                        <span>What videos can I convert?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 pb-4 hidden">
+                        <p class="text-gray-600">You can only convert YouTube videos that are licensed under Creative Commons. Our system checks the license before processing to ensure legal compliance.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex justify-between items-center hover:bg-gray-50 focus:outline-none">
+                        <span>How long will the converted video be?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 pb-4 hidden">
+                        <p class="text-gray-600">The converted video will be between 1-2 minutes long, which is ideal for TikTok. If your original clip is shorter, we'll maintain its original length.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex justify-between items-center hover:bg-gray-50 focus:outline-none">
+                        <span>What enhancements are applied to the video?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 pb-4 hidden">
+                        <p class="text-gray-600">We convert the video to vertical format (9:16), add dynamic transitions, incorporate eye-catching subtitles, and include royalty-free background music that complements the content.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex justify-between items-center hover:bg-gray-50 focus:outline-none">
+                        <span>Is this service free to use?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 pb-4 hidden">
+                        <p class="text-gray-600">Yes, this service is currently free to use. However, we may introduce premium features in the future for more advanced editing options.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left font-semibold flex justify-between items-center hover:bg-gray-50 focus:outline-none">
+                        <span>Can I customize the editing style?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                    </button>
+                    <div class="faq-content px-6 pb-4 hidden">
+                        <p class="text-gray-600">Currently, we apply our default TikTok-style editing. We're working on customization options that will allow you to select transitions, filters, and music in future updates.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap">
+                <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-video text-2xl"></i>
+                        <span class="text-2xl font-bold">TikTuber</span>
+                    </div>
+                    <p class="text-gray-200 mb-4">Transform YouTube videos into engaging TikTok content with our AI-powered editor.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white hover:text-gray-200 transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-gray-200 transition">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-gray-200 transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-gray-200 transition">
+                            <i class="fab fa-tiktok text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 mb-8 md:mb-0">
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-200 hover:text-white transition">Home</a></li>
+                        <li><a href="#how-it-works" class="text-gray-200 hover:text-white transition">How It Works</a></li>
+                        <li><a href="#faq" class="text-gray-200 hover:text-white transition">FAQ</a></li>
+                        <li><a href="#" class="text-gray-200 hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-200 hover:text-white transition">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/3">
+                    <h3 class="text-lg font-bold mb-4">Contact Us</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <a href="mailto:support@tiktuber.com" class="text-gray-200 hover:text-white transition">support@tiktuber.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span class="text-gray-200">...</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span class="text-gray-200">...</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300 text-sm">
+                <p>© 2025 TikTuber. All rights reserved. This service should only be used with Creative Commons content.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ Toggles
+            document.querySelectorAll('.faq-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+
+            // Form Elements
+            const converterForm = document.getElementById('converter-form');
+            const youtubeUrlInput = document.getElementById('youtube-url');
+            const statusBox = document.getElementById('status-box');
+            const statusTitle = document.getElementById('status-title');
+            const statusMessage = document.getElementById('status-message');
+            const statusIcon = document.getElementById('status-icon');
+            const errorBox = document.getElementById('error-box');
+            const errorMessage = document.getElementById('error-message');
+            const resultContainer = document.getElementById('result-container');
+            const originalVideo = document.getElementById('original-video');
+            const tiktokVideo = document.getElementById('tiktok-video');
+            const downloadBtn = document.getElementById('download-btn');
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressLines = document.querySelectorAll('.progress-line-inner');
+
+            converterForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const youtubeUrl = youtubeUrlInput.value.trim();
+                
+                if (!youtubeUrl.includes('youtube.com/clip/')) {
+                    youtubeUrlInput.classList.add('shake');
+                    setTimeout(() => youtubeUrlInput.classList.remove('shake'), 500);
+                    showError('Please enter a valid YouTube clip URL.');
+                    return;
+                }
+                
+                resetUI();
+                showStatus('Processing...', 'Sending request to server.');
+                
+                try {
+                    const response = await fetch('/convert', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: youtubeUrl })
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to start conversion');
+                    
+                    const { jobId } = await response.json();
+                    pollStatus(jobId);
+                } catch (error) {
+                    showError(error.message);
+                }
+            });
+            
+            async function pollStatus(jobId) {
+                const interval = setInterval(async () => {
+                    try {
+                        const response = await fetch(`/status/${jobId}`);
+                        if (!response.ok) throw new Error('Failed to get status');
+                        const { status, message } = await response.json();
+                        
+                        if (status === 'error') {
+                            clearInterval(interval);
+                            showError(message);
+                        } else if (status === 'ready') {
+                            clearInterval(interval);
+                            showStatus('Processing complete!', 'Your TikTok-style video is ready.', 'success');
+                            updateProgress(4);
+                            setTimeout(() => showResult(jobId), 1000);
+                        } else {
+                            if (status === 'checking_license') {
+                                updateProgress(1);
+                                showStatus('Checking license...', message);
+                            } else if (status === 'downloading' || status === 'extracting') {
+                                updateProgress(2);
+                                showStatus('Processing video...', message);
+                            } else if (status === 'editing') {
+                                updateProgress(3);
+                                showStatus('Editing video...', message);
+                            }
+                        }
+                    } catch (error) {
+                        clearInterval(interval);
+                        showError('Error getting status');
+                    }
+                }, 2000);
+            }
+            
+            function resetUI() {
+                statusBox.classList.remove('hidden');
+                errorBox.classList.add('hidden');
+                resultContainer.classList.add('hidden');
+                downloadBtn.classList.add('hidden');
+                progressSteps.forEach(step => step.classList.remove('active', 'completed'));
+                progressLines.forEach(line => line.style.width = '0%');
+            }
+            
+            function showStatus(title, message, type = 'loading') {
+                statusBox.classList.remove('hidden');
+                statusTitle.textContent = title;
+                statusMessage.textContent = message;
+                statusIcon.innerHTML = type === 'loading' 
+                    ? '<i class="fas fa-circle-notch fa-spin text-pink-600"></i>'
+                    : '<i class="fas fa-check-circle text-green-600"></i>';
+            }
+            
+            function showError(message) {
+                statusBox.classList.add('hidden');
+                errorBox.classList.remove('hidden');
+                errorMessage.textContent = message;
+            }
+            
+            function updateProgress(step) {
+                progressSteps.forEach((s, i) => {
+                    if (i + 1 < step) {
+                        s.classList.remove('active');
+                        s.classList.add('completed');
+                    } else if (i + 1 === step) {
+                        s.classList.add('active');
+                        s.classList.remove('completed');
+                    } else {
+                        s.classList.remove('active', 'completed');
+                    }
+                });
+                progressLines.forEach((line, i) => {
+                    if (i + 1 < step) line.style.width = '100%';
+                    else if (i + 1 === step - 1) line.style.width = '50%';
+                    else line.style.width = '0%';
+                });
+            }
+            
+            function showResult(jobId) {
+                statusBox.classList.add('hidden');
+                resultContainer.classList.remove('hidden');
+                resultContainer.classList.add('fadeIn');
+                
+                // Note: Original video not available in this version; show placeholder
+                originalVideo.innerHTML = '<div class="flex items-center justify-center h-48 bg-gray-200 rounded"><p class="text-gray-600">Original clip unavailable</p></div>';
+                tiktokVideo.querySelector('source').src = `/download/${jobId}`;
+                tiktokVideo.load();
+                downloadBtn.href = `/download/${jobId}`;
+                downloadBtn.download = 'tiktok_video.mp4';
+                downloadBtn.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
